@@ -1,0 +1,27 @@
+{
+  "SurveyOfficers": [
+    {
+      "id": 3,
+      "username": "mike_wilson",
+      "email": "mike@company.com",
+      "role": "Surveyor",
+      "specialization": "Auto Damage",
+      "surveysCompleted": 89,
+      "accuracyRate": 96.2,
+      "createdDate": "2024-09-30",
+      "isActive": true
+    },
+    {
+      "id": 8,
+      "username": "david_miller",
+      "email": "david@company.com",
+      "role": "Surveyor",
+      "specialization": "Property Damage",
+      "surveysCompleted": 45,
+      "accuracyRate": 94.8,
+      "createdDate": "2024-11-05",
+      "isActive": true
+    }
+  ],
+  "totalCount": 2
+}

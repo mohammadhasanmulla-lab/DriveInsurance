@@ -1,0 +1,74 @@
+﻿/* DriveSure - site styles */
+:root{
+    --primary: #2563EB;
+    --dark-blue: #1E3A8A;
+    --bg: #ffffff;
+    --muted: #6b7280;
+}
+
+body {
+    background: #f8fafc;
+    color: #111827;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Navbar brand mark */
+.brand-mark { box-shadow: 0 4px 12px rgba(37,99,235,0.12); }
+
+/* Cards */
+.card {
+    border-radius: 12px;
+}
+.card .card-body { padding: 1rem; }
+
+/* Sidebar */
+.sidebar-nav {
+    min-height: 70vh;
+}
+.sidebar-nav .nav-link {
+    color: #374151;
+    padding: .55rem .75rem;
+    transition: all .15s ease-in-out;
+}
+.sidebar-nav .nav-link:hover {
+    background: rgba(37,99,235,0.06);
+    color: var(--primary);
+}
+.sidebar-nav .nav-link.active {
+    background: linear-gradient(90deg, rgba(37,99,235,0.12), rgba(30,58,138,0.06));
+    color: var(--dark-blue);
+    font-weight: 600;
+}
+
+/* Process steps */
+.process-step { min-width: 120px; }
+.process-step i { font-size: 20px; }
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 6px 18px rgba(37,99,235,0.12);
+}
+.btn-primary:hover {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue);
+}
+
+/* Progress small */
+.progress-sm { height: 10px; border-radius: 8px; }
+
+/* Table */
+.table thead th { border-bottom: 1px solid #eef2ff; }
+
+/* Utility */
+.text-muted { color: var(--muted) !important; }
+
+/* Responsive tweaks */
+@media (max-width: 991px) {
+    .sidebar-nav { display: none; }
+    main { padding-top: 3rem; }
+}
+
+/* Small shadows */
+.shadow-sm { box-shadow: 0 6px 18px rgba(13,38,97,0.06) !important; }

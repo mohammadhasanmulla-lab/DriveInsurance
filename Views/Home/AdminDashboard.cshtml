@@ -1,0 +1,253 @@
+@model AdminDashboardViewModel
+@{
+	ViewBag.Title = "Admin Dashboard - DriveSure";
+}
+
+<div class="container-fluid py-4">
+	<div class="row mb-4">
+		<div class="col-12">
+			<h2 class="fw-bold">Admin Dashboard</h2>
+			<p class="text-muted">Welcome to the DriveSure administration panel</p>
+		</div>
+	</div>
+
+	<!-- Summary Cards -->
+	<div class="row g-3 mb-4">
+		<div class="col-md-3">
+			<div class="card shadow-sm border-0">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-start">
+						<div>
+							<div class="small text-muted">Total Users</div>
+							<h3 class="fw-bold text-primary">@Model.TotalUsers</h3>
+						</div>
+						<i class="fa-solid fa-users fa-2x text-primary opacity-50"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-3">
+			<div class="card shadow-sm border-0">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-start">
+						<div>
+							<div class="small text-muted">Claims Officers</div>
+							<h3 class="fw-bold text-info">@Model.ClaimsOfficersCount</h3>
+						</div>
+						<i class="fa-solid fa-briefcase fa-2x text-info opacity-50"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-3">
+			<div class="card shadow-sm border-0">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-start">
+						<div>
+							<div class="small text-muted">Survey Officers</div>
+							<h3 class="fw-bold text-warning">@Model.SurveyOfficersCount</h3>
+						</div>
+						<i class="fa-solid fa-magnifying-glass fa-2x text-warning opacity-50"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-3">
+			<div class="card shadow-sm border-0">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-start">
+						<div>
+							<div class="small text-muted">Compliance Officers</div>
+							<h3 class="fw-bold text-success">@Model.ComplianceOfficersCount</h3>
+						</div>
+						<i class="fa-solid fa-clipboard-check fa-2x text-success opacity-50"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Management Sections -->
+	<div class="row g-3">
+		<!-- Claims Officers -->
+		<div class="col-lg-6">
+			<div class="card shadow-sm border-0">
+				<div class="card-header bg-light border-0">
+					<div class="d-flex justify-content-between align-items-center">
+						<h5 class="mb-0">Claims Officers (@Model.ClaimsOfficersCount)</h5>
+						<a href="/Home/ClaimsOfficers" class="btn btn-sm btn-outline-primary">View All</a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-sm">
+							<thead class="table-light">
+								<tr>
+									<th>Name</th>
+									<th>Department</th>
+									<th>Claims Handled</th>
+									<th>Approval Rate</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var officer in Model.ClaimsOfficers)
+								{
+									<tr>
+										<td>@officer.Username</td>
+										<td>@officer.Department</td>
+										<td>@officer.ClaimsHandled</td>
+										<td>
+											<span class="badge bg-success">@officer.ApprovalRate%</span>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Survey Officers -->
+		<div class="col-lg-6">
+			<div class="card shadow-sm border-0">
+				<div class="card-header bg-light border-0">
+					<div class="d-flex justify-content-between align-items-center">
+						<h5 class="mb-0">Survey Officers (@Model.SurveyOfficersCount)</h5>
+						<a href="/Home/SurveyOfficers" class="btn btn-sm btn-outline-primary">View All</a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-sm">
+							<thead class="table-light">
+								<tr>
+									<th>Name</th>
+									<th>Specialization</th>
+									<th>Surveys Completed</th>
+									<th>Accuracy</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var officer in Model.SurveyOfficers)
+								{
+									<tr>
+										<td>@officer.Username</td>
+										<td>@officer.Specialization</td>
+										<td>@officer.SurveysCompleted</td>
+										<td>
+											<span class="badge bg-success">@officer.AccuracyRate%</span>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Compliance Officers -->
+		<div class="col-lg-6">
+			<div class="card shadow-sm border-0">
+				<div class="card-header bg-light border-0">
+					<div class="d-flex justify-content-between align-items-center">
+						<h5 class="mb-0">Compliance Officers (@Model.ComplianceOfficersCount)</h5>
+						<a href="/Home/ComplianceOfficers" class="btn btn-sm btn-outline-primary">View All</a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-sm">
+							<thead class="table-light">
+								<tr>
+									<th>Name</th>
+									<th>Certification</th>
+									<th>Audits</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var officer in Model.ComplianceOfficers)
+								{
+									<tr>
+										<td>@officer.Username</td>
+										<td>@officer.CertificationLevel</td>
+										<td>@officer.AuditsCompleted</td>
+										<td>
+											<span class="badge bg-success">@officer.ComplianceStatus</span>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Policies -->
+		<div class="col-lg-6">
+			<div class="card shadow-sm border-0">
+				<div class="card-header bg-light border-0">
+					<div class="d-flex justify-content-between align-items-center">
+						<h5 class="mb-0">Active Policies (@Model.Policies.Count)</h5>
+						<a href="/Home/AddPolicy" class="btn btn-sm btn-primary">Add Policy</a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-sm">
+							<thead class="table-light">
+								<tr>
+									<th>Policy Name</th>
+									<th>Type</th>
+									<th>Premium</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var policy in Model.Policies.Take(5))
+								{
+									<tr>
+										<td>@policy.PolicyName</td>
+										<td><span class="badge bg-light text-dark">@policy.PolicyType</span></td>
+										<td>$@policy.PremiumAmount</td>
+										<td>
+											<span class="badge bg-success">Active</span>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Quick Actions -->
+	<div class="row g-3 mt-3">
+		<div class="col-12">
+			<div class="card shadow-sm border-0">
+				<div class="card-header bg-light border-0">
+					<h5 class="mb-0">Quick Actions</h5>
+				</div>
+				<div class="card-body">
+					<a href="/Home/ManageUsers" class="btn btn-outline-primary me-2">
+						<i class="fa-solid fa-users me-2"></i>Manage Users
+					</a>
+					<a href="/Home/ManagePolicies" class="btn btn-outline-primary me-2">
+						<i class="fa-solid fa-file-contract me-2"></i>Manage Policies
+					</a>
+					<a href="/Home/AddPolicy" class="btn btn-primary">
+						<i class="fa-solid fa-plus me-2"></i>Add New Policy
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

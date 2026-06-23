@@ -1,0 +1,111 @@
+@model Policy
+@{
+	ViewBag.Title = "Add New Policy - DriveSure Admin";
+}
+
+<div class="container-fluid py-4">
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="d-flex justify-content-between align-items-center">
+				<div>
+					<h2 class="fw-bold">Add New Policy</h2>
+					<p class="text-muted">Create a new insurance policy</p>
+				</div>
+				<a href="/Home/ManagePolicies" class="btn btn-outline-primary">
+					<i class="fa-solid fa-arrow-left me-2"></i>Back to Policies
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-8 mx-auto">
+			<div class="card shadow-sm border-0">
+				<div class="card-body p-4">
+					<form method="post" action="/Home/AddPolicy">
+						<div class="row g-3">
+							<!-- Policy Name -->
+							<div class="col-md-6">
+								<label class="form-label fw-semibold">Policy Name *</label>
+								<input type="text" class="form-control" name="PolicyName" placeholder="e.g., Auto Plus" required />
+								<small class="text-muted">Enter the name of the policy</small>
+							</div>
+
+							<!-- Policy Type -->
+							<div class="col-md-6">
+								<label class="form-label fw-semibold">Policy Type *</label>
+								<select class="form-select" name="PolicyType" required>
+									<option value="">Select Policy Type</option>
+									<option value="Auto">Auto Insurance</option>
+									<option value="Health">Health Insurance</option>
+									<option value="Home">Home Insurance</option>
+									<option value="Life">Life Insurance</option>
+									<option value="Travel">Travel Insurance</option>
+									<option value="Business">Business Insurance</option>
+								</select>
+							</div>
+
+							<!-- Description -->
+							<div class="col-12">
+								<label class="form-label fw-semibold">Description *</label>
+								<textarea class="form-control" name="Description" rows="3" placeholder="Describe the policy coverage and benefits" required></textarea>
+							</div>
+
+							<!-- Coverage Amount -->
+							<div class="col-md-6">
+								<label class="form-label fw-semibold">Coverage Amount ($) *</label>
+								<input type="number" class="form-control" name="CoverageAmount" placeholder="100000" step="100" required />
+								<small class="text-muted">Maximum coverage provided</small>
+							</div>
+
+							<!-- Premium Amount -->
+							<div class="col-md-6">
+								<label class="form-label fw-semibold">Premium Amount ($) *</label>
+								<input type="number" class="form-control" name="PremiumAmount" placeholder="899" step="0.01" required />
+								<small class="text-muted">Monthly or annual premium</small>
+							</div>
+
+							<!-- Status -->
+							<div class="col-12">
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input" name="IsActive" id="isActive" checked />
+									<label class="form-check-label" for="isActive">
+										<strong>Activate this policy</strong>
+										<br />
+										<small class="text-muted">Policy will be available for customers immediately</small>
+									</label>
+								</div>
+							</div>
+
+							<!-- Submit Buttons -->
+							<div class="col-12 pt-2">
+								<button type="submit" class="btn btn-primary btn-lg me-2">
+									<i class="fa-solid fa-check me-2"></i>Create Policy
+								</button>
+								<a href="/Home/ManagePolicies" class="btn btn-outline-secondary btn-lg">
+									<i class="fa-solid fa-times me-2"></i>Cancel
+								</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- Information Card -->
+			<div class="card border-0 shadow-sm mt-3 bg-light">
+				<div class="card-body">
+					<h6 class="fw-bold mb-3">
+						<i class="fa-solid fa-circle-info text-info me-2"></i>Policy Creation Tips
+					</h6>
+					<ul class="mb-0 small">
+						<li>Ensure policy names are unique and descriptive</li>
+						<li>Coverage amount should be realistic and attractive to customers</li>
+						<li>Premium should reflect the coverage level provided</li>
+						<li>Clear descriptions help customers understand the policy</li>
+						<li>Active policies are immediately available for purchase</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

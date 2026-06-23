@@ -1,0 +1,125 @@
+﻿@page
+@{
+	ViewData["Title"] = "Home - DriveSure";
+}
+<section class="hero-section py-6">
+	<div class="container">
+		<div class="row align-items-center">
+			<div class="col-lg-6">
+				<h1 class="display-5 fw-bold text-dark">Fast & Secure Insurance Claim Processing</h1>
+				<p class="lead text-muted mb-4">Streamlined claims, intelligent checks, and rapid settlements — built for trust and speed.</p>
+				<div class="d-flex gap-2">
+					<a asp-page="/Home/Login" class="btn btn-primary btn-lg">Login</a>
+					<a href="#features" class="btn btn-outline-primary btn-lg">Get Started</a>
+				</div>
+				<div class="mt-4 d-flex flex-wrap gap-2">
+					<div class="badge bg-light border text-muted">24/7 Support</div>
+					<div class="badge bg-light border text-muted">Secure Data</div>
+					<div class="badge bg-light border text-muted">Fast Settlements</div>
+				</div>
+			</div>
+			<div class="col-lg-6 d-none d-lg-block">
+				<div class="card shadow-sm border-0">
+					<div class="card-body p-4">
+						<img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=bd7d2e2c6a3f9c3f" class="img-fluid rounded" alt="hero" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Features -->
+		<div id="features" class="row text-center mt-5">
+			<div class="col-12">
+				<h3 class="mb-4">Features</h3>
+			</div>
+			<div class="col-md-3 mb-3">
+				<div class="card h-100 border-0 shadow-sm rounded">
+					<div class="card-body">
+						<i class="fa-solid fa-file-circle-plus fa-2x text-primary mb-3"></i>
+						<h5 class="card-title">Claim Submission</h5>
+						<p class="text-muted small">Easy online submission with guided forms.</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3 mb-3">
+				<div class="card h-100 border-0 shadow-sm rounded">
+					<div class="card-body">
+						<i class="fa-solid fa-truck-fast fa-2x text-primary mb-3"></i>
+						<h5 class="card-title">Tracking</h5>
+						<p class="text-muted small">Real-time status tracking for every claim.</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3 mb-3">
+				<div class="card h-100 border-0 shadow-sm rounded">
+					<div class="card-body">
+						<i class="fa-solid fa-user-shield fa-2x text-primary mb-3"></i>
+						<h5 class="card-title">Fraud Detection</h5>
+						<p class="text-muted small">Automated checks to reduce risk and fraud.</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3 mb-3">
+				<div class="card h-100 border-0 shadow-sm rounded">
+					<div class="card-body">
+						<i class="fa-solid fa-hand-holding-dollar fa-2x text-primary mb-3"></i>
+						<h5 class="card-title">Quick Settlement</h5>
+						<p class="text-muted small">Faster decisions with streamlined approvals.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Process Steps -->
+		<div class="row mt-5">
+			<div class="col-12">
+				<h3 class="mb-3">How it works</h3>
+				<div class="process d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+					<div class="process-step text-center p-3 bg-white rounded shadow-sm">
+						<i class="fa-solid fa-file-circle-plus fa-lg text-primary mb-2"></i>
+						<div class="fw-semibold">Submit</div>
+					</div>
+					<div class="process-arrow d-none d-md-block"><i class="fa-solid fa-arrow-right text-muted"></i></div>
+					<div class="process-step text-center p-3 bg-white rounded shadow-sm">
+						<i class="fa-solid fa-search fa-lg text-primary mb-2"></i>
+						<div class="fw-semibold">Review</div>
+					</div>
+					<div class="process-arrow d-none d-md-block"><i class="fa-solid fa-arrow-right text-muted"></i></div>
+					<div class="process-step text-center p-3 bg-white rounded shadow-sm">
+						<i class="fa-solid fa-clipboard-check fa-lg text-primary mb-2"></i>
+						<div class="fw-semibold">Survey</div>
+					</div>
+					<div class="process-arrow d-none d-md-block"><i class="fa-solid fa-arrow-right text-muted"></i></div>
+					<div class="process-step text-center p-3 bg-white rounded shadow-sm">
+						<i class="fa-solid fa-balance-scale fa-lg text-primary mb-2"></i>
+						<div class="fw-semibold">Compliance</div>
+					</div>
+					<div class="process-arrow d-none d-md-block"><i class="fa-solid fa-arrow-right text-muted"></i></div>
+					<div class="process-step text-center p-3 bg-white rounded shadow-sm">
+						<i class="fa-solid fa-thumbs-up fa-lg text-primary mb-2"></i>
+						<div class="fw-semibold">Approval</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+n        <div id="contact" class="row mt-5">
+			<div class="col-12 text-center text-muted">
+				<small>Questions? Contact our support at <a href="mailto:support@drivesure.com">support@drivesure.com</a></small>
+			</div>
+		</div>
+	</div>
+</section>
+
+@section Scripts {
+	<script>
+		// Smooth scroll for Get Started
+		document.querySelectorAll('a[href^="#"]').forEach(function (el) {
+			el.addEventListener('click', function (e) {
+				e.preventDefault();
+				var target = document.querySelector(this.getAttribute('href'));
+				if (target) target.scrollIntoView({ behavior: 'smooth' });
+			});
+		});
+	</script>
+}

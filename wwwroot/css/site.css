@@ -1,0 +1,78 @@
+/* DriveSure - enhanced site styles */
+:root{
+    --primary: #2563EB;
+    --dark-blue: #1E3A8A;
+    --accent: #06b6d4;
+    --bg: #ffffff;
+    --muted: #6b7280;
+}
+
+* { box-sizing: border-box; }
+body {
+    background: linear-gradient(180deg,#f8fafc 0%, #f1f5f9 100%);
+    color: #0f172a;
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing:antialiased;
+}
+
+/* NAVBAR */
+.navbar { backdrop-filter: blur(6px); }
+.navbar .navbar-brand { font-weight:700; letter-spacing:0.2px; }
+.navbar .nav-link { color: #334155 !important; padding: .6rem 1rem; }
+.navbar .nav-link:hover { color: var(--primary) !important; }
+.navbar .btn-outline-primary { color: var(--primary); border-color: rgba(37,99,235,0.12); }
+
+/* Hero */
+.hero-section { padding: 5.5rem 0; background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(30,58,138,0.03)); }
+.hero-section .display-5 { color: #042a6b; }
+.hero-card { border-radius: 18px; overflow:hidden; }
+.hero-image { min-height: 260px; object-fit:cover; }
+
+/* Cards */
+.card { border-radius: 12px; transition: transform .18s ease, box-shadow .18s ease; }
+.card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(14,42,85,0.12); }
+.card .card-body { padding: 1.2rem; }
+
+/* Feature icons */
+.card .fa-2x { color: var(--primary); }
+
+/* Sidebar */
+.sidebar-nav { min-height: 68vh; }
+.sidebar-nav .nav-link { color: #475569; padding: .6rem .8rem; border-radius:8px; }
+.sidebar-nav .nav-link.active, .sidebar-nav .nav-link:hover { background: rgba(37,99,235,0.06); color: var(--dark-blue); font-weight:600; }
+
+/* Buttons */
+.btn-primary { background:var(--primary); border: none; padding: .6rem 1rem; border-radius:10px; }
+.btn-outline-primary { border-radius:10px; }
+
+/* Progress */
+.progress-sm { height: 10px; border-radius: 999px; }
+.progress-bar { border-radius: 999px; }
+
+/* Tables */
+.table { background: transparent; }
+.table thead th { background: rgba(15,23,42,0.02); border-bottom: none; }
+
+/* Footer */
+footer { background: linear-gradient(90deg, rgba(37,99,235,0.04), rgba(30,58,138,0.02)); }
+footer a { color: #0f172a; }
+
+/* Utility */
+.text-muted { color: var(--muted) !important; }
+.small { font-size: .85rem; }
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .sidebar-nav { display: none; }
+    .hero-section { padding: 3.5rem 0; }
+}
+
+/* subtle float animation */
+@keyframes floaty { 0% { transform: translateY(0);} 50% { transform: translateY(-6px);} 100% { transform: translateY(0);} }
+.floaty { animation: floaty 6s ease-in-out infinite; }
+
+/* shadow class */
+.shadow-soft { box-shadow: 0 10px 30px rgba(14,42,85,0.06); }
+
+/* small responsive card grid */
+.features-grid { gap: 1rem; }

@@ -1,0 +1,48 @@
+@*
+  Partial sidebar. Use ViewBag.Active (string) to set active item.
+  Example in view: @await Html.PartialAsync("_Sidebar")
+*@
+<div class="bg-white rounded shadow-sm p-3 h-100 sidebar-nav">
+	<div class="d-flex align-items-center mb-3">
+		<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width:40px;height:40px">
+			<i class="fa-solid fa-user-gear"></i>
+		</div>
+		<div>
+			<div class="fw-bold">Hello,</div>
+			<div class="small text-muted">@ViewBag.UserName ?? "User"</div>
+		</div>
+	</div>
+
+	<hr />
+
+	<ul class="nav flex-column">
+		@* Dashboard common *@
+		<li class="nav-item mb-1">
+			<a class="nav-link rounded @((ViewBag.Active=="Dashboard")? "active":"")" href="#">
+				<i class="fa-solid fa-gauge-high me-2"></i> Dashboard
+			</a>
+		</li>
+
+		@* Role-specific items: render common placeholders; individual pages may add more *@
+		<li class="nav-item mb-1">
+			<a class="nav-link rounded @((ViewBag.Active=="Item1")? "active":"")" href="#">
+				<i class="fa-solid fa-file-lines me-2"></i> My Policies
+			</a>
+		</li>
+		<li class="nav-item mb-1">
+			<a class="nav-link rounded @((ViewBag.Active=="SubmitClaim")? "active":"")" href="#">
+				<i class="fa-solid fa-upload me-2"></i> Submit Claim
+			</a>
+		</li>
+		<li class="nav-item mb-1">
+			<a class="nav-link rounded @((ViewBag.Active=="Track")? "active":"")" href="#">
+				<i class="fa-solid fa-location-dot me-2"></i> Track Claim
+			</a>
+		</li>
+		<li class="nav-item mt-3">
+			<a class="nav-link text-danger rounded" href="#">
+				<i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+			</a>
+		</li>
+	</ul>
+</div>

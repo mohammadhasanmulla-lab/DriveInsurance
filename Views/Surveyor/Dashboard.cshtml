@@ -1,0 +1,75 @@
+@{
+	ViewBag.Title = "Surveyor Dashboard - DriveSure";
+	ViewBag.Active = "Dashboard";
+	ViewBag.UserName = "Surveyor Lee";
+}
+<div class="row g-3">
+	<div class="col-lg-3 d-none d-lg-block">
+		@await Html.PartialAsync("_Sidebar")
+	</div>
+	<div class="col-lg-9">
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<div>
+				<h4 class="mb-0">Surveyor Dashboard</h4>
+				<div class="small text-muted">Assigned survey visits & reports</div>
+			</div>
+			<div>
+				<button class="btn btn-primary"><i class="fa-solid fa-upload me-1"></i> Upload Report</button>
+			</div>
+		</div>
+
+n        <div class="card shadow-sm mb-3">
+			<div class="card-body">
+				<h6>Assigned Claims</h6>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item d-flex justify-content-between align-items-center">
+						<div>
+							<div class="fw-semibold">CLM-10321</div>
+							<div class="small text-muted">John Smith - Auto</div>
+						</div>
+						<div class="text-end">
+							<div class="small text-muted">Due: 2026-06-20</div>
+							<button class="btn btn-sm btn-outline-primary mt-2">Start Survey</button>
+						</div>
+					</li>
+					<li class="list-group-item d-flex justify-content-between align-items-center">
+						<div>
+							<div class="fw-semibold">CLM-10299</div>
+							<div class="small text-muted">Anna White - Home</div>
+						</div>
+						<div class="text-end">
+							<div class="small text-muted">Due: 2026-06-22</div>
+							<button class="btn btn-sm btn-outline-primary mt-2">Start Survey</button>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+n        <div class="card shadow-sm">
+			<div class="card-body">
+				<h6>Submit Report</h6>
+				<form>
+					<div class="mb-3">
+						<label class="form-label">Claim ID</label>
+						<input class="form-control" value="CLM-10321" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Summary</label>
+						<textarea class="form-control" rows="4" placeholder="Brief summary of findings..."></textarea>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Upload Photos / Documents</label>
+						<input type="file" class="form-control" multiple />
+						<div class="small text-muted mt-1">Supported: JPG, PNG, PDF</div>
+					</div>
+					<div>
+						<button class="btn btn-primary">Submit Report</button>
+						<button class="btn btn-outline-secondary ms-2">Save Draft</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+n    </div>
+</div>

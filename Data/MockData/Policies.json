@@ -1,0 +1,45 @@
+{
+  "Policies": [
+    {
+      "id": 1,
+      "policyName": "Auto Plus",
+      "description": "Comprehensive auto insurance with collision and liability coverage",
+      "policyType": "Auto",
+      "coverageAmount": 100000,
+      "premiumAmount": 899,
+      "createdDate": "2024-06-15",
+      "isActive": true
+    },
+    {
+      "id": 2,
+      "policyName": "Health Guard",
+      "description": "Full health coverage including hospitalization and emergency care",
+      "policyType": "Health",
+      "coverageAmount": 500000,
+      "premiumAmount": 1299,
+      "createdDate": "2024-08-20",
+      "isActive": true
+    },
+    {
+      "id": 3,
+      "policyName": "Home Shield",
+      "description": "Complete home protection covering structure, contents, and liability",
+      "policyType": "Home",
+      "coverageAmount": 250000,
+      "premiumAmount": 799,
+      "createdDate": "2024-10-10",
+      "isActive": true
+    },
+    {
+      "id": 4,
+      "policyName": "Travel Safe",
+      "description": "International travel coverage with medical and baggage protection",
+      "policyType": "Travel",
+      "coverageAmount": 50000,
+      "premiumAmount": 299,
+      "createdDate": "2024-09-15",
+      "isActive": true
+    }
+  ],
+  "totalCount": 4
+}

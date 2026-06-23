@@ -1,0 +1,109 @@
+@model List<Policy>
+@{
+	ViewBag.Title = "Manage Policies - DriveSure Admin";
+}
+
+<div class="container-fluid py-4">
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="d-flex justify-content-between align-items-center">
+				<div>
+					<h2 class="fw-bold">Manage Policies</h2>
+					<p class="text-muted">View and manage all insurance policies</p>
+				</div>
+				<div>
+					<a href="/Home/AddPolicy" class="btn btn-primary me-2">
+						<i class="fa-solid fa-plus me-2"></i>Add New Policy
+					</a>
+					<a href="/Home/AdminDashboard" class="btn btn-outline-primary">
+						<i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@if (TempData["SuccessMessage"] != null)
+	{
+		<div class="row mb-3">
+			<div class="col-12">
+				<div class="alert alert-success alert-dismissible fade show" role="alert">
+					<i class="fa-solid fa-circle-check me-2"></i>@TempData["SuccessMessage"]
+					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				</div>
+			</div>
+		</div>
+	}
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card shadow-sm border-0">
+				<div class="card-header bg-light border-0">
+					<h5 class="mb-0">Total Policies: <span class="badge bg-primary">@Model.Count</span></h5>
+				</div>
+				<div class="card-body">
+					@if (Model.Count == 0)
+					{
+						<div class="alert alert-info">No policies found. <a href="/Home/AddPolicy">Create one now</a></div>
+					}
+					else
+					{
+						<div class="row g-3">
+							@foreach (var policy in Model)
+							{
+								<div class="col-md-6">
+									<div class="card border shadow-sm h-100">
+										<div class="card-header bg-light border-0">
+											<div class="d-flex justify-content-between align-items-start">
+												<div>
+													<h5 class="card-title mb-0">@policy.PolicyName</h5>
+													<small class="text-muted">@policy.PolicyType</small>
+												</div>
+												@if (policy.IsActive)
+												{
+													<span class="badge bg-success">Active</span>
+												}
+												else
+												{
+													<span class="badge bg-secondary">Inactive</span>
+												}
+											</div>
+										</div>
+										<div class="card-body">
+											<p class="text-muted small">@policy.Description</p>
+											<div class="row mb-3">
+												<div class="col-6">
+													<div class="small text-muted">Coverage Amount</div>
+													<strong class="h6">$@policy.CoverageAmount.ToString("N0")</strong>
+												</div>
+												<div class="col-6">
+													<div class="small text-muted">Premium</div>
+													<strong class="h6">$@policy.PremiumAmount.ToString("N0")</strong>
+												</div>
+											</div>
+											<small class="text-muted">
+												<i class="fa-solid fa-calendar me-1"></i>
+												Created: @policy.CreatedDate.ToString("MMM dd, yyyy")
+											</small>
+										</div>
+										<div class="card-footer bg-light border-0">
+											<button class="btn btn-sm btn-outline-primary" title="View Details">
+												<i class="fa-solid fa-eye me-1"></i>View
+											</button>
+											<button class="btn btn-sm btn-outline-secondary" title="Edit">
+												<i class="fa-solid fa-pen me-1"></i>Edit
+											</button>
+											<button class="btn btn-sm btn-outline-danger" title="Delete">
+												<i class="fa-solid fa-trash"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+							}
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

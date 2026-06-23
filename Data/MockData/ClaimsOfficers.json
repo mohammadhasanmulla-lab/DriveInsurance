@@ -1,0 +1,27 @@
+{
+  "ClaimsOfficers": [
+    {
+      "id": 2,
+      "username": "jane_smith",
+      "email": "jane@company.com",
+      "role": "ClaimsOfficer",
+      "department": "Auto Claims",
+      "claimsHandled": 156,
+      "approvalRate": 92.5,
+      "createdDate": "2024-10-15",
+      "isActive": true
+    },
+    {
+      "id": 7,
+      "username": "emily_davis",
+      "email": "emily@company.com",
+      "role": "ClaimsOfficer",
+      "department": "Health Claims",
+      "claimsHandled": 203,
+      "approvalRate": 88.3,
+      "createdDate": "2024-10-25",
+      "isActive": true
+    }
+  ],
+  "totalCount": 2
+}
