@@ -1,59 +1,195 @@
+@model MyProject.Models.RegisterViewModel
 @{
-	ViewBag.Title = "Register - DriveSure";
+    ViewBag.Title = "Create Account - DriveSure";
+    Layout = null;
 }
-<div class="d-flex align-items-center justify-content-center" style="min-height:75vh;">
-	<div class="row w-100 justify-content-center">
-		<div class="col-md-8 col-lg-6">
-			<div class="card overflow-hidden shadow-lg">
-				<div class="row g-0">
-					<div class="col-md-5 d-none d-md-block" style="background: linear-gradient(180deg,#2563EB,#1E3A8A); color:white;">
-						<div class="p-4 text-center">
-							<h3 class="fw-bold">Join Us</h3>
-							<p class="small">Create your DriveSure account</p>
-							<i class="fa-solid fa-user-plus fa-3x mt-3"></i>
-						</div>
-					</div>
-					<div class="col-md-7">
-						<div class="card-body p-4">
-							<h5 class="card-title mb-3">Create Account</h5>
-							<form>
-								<div class="mb-3">
-									<label class="form-label">Username</label>
-									<input type="text" class="form-control" placeholder="Choose a username" />
-								</div>
-								<div class="mb-3">
-									<label class="form-label">Email</label>
-									<input type="email" class="form-control" placeholder="your@company.com" />
-								</div>
-								<div class="mb-3">
-									<label class="form-label">Password</label>
-									<input type="password" class="form-control" placeholder="Create a strong password" />
-								</div>
-								<div class="mb-3">
-									<label class="form-label">Role</label>
-									<select class="form-select">
-										<option selected disabled>Select a role</option>
-										<option value="customer">Customer</option>
-										<option value="claim-officer">Claim Officer</option>
-										<option value="surveyor">Surveyor</option>
-										<option value="compliance-officer">Compliance Officer</option>
-										<option value="admin">Admin</option>
-									</select>
-								</div>
-								<div class="mt-4">
-									<button class="btn btn-primary w-100">Create Account</button>
-								</div>
-								<div class="text-center mt-3 small text-muted">
-									Already have an account? <a href="/Home/Login">Sign in</a>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-center mt-3 text-muted small">
-				<i class="fa-solid fa-lock me-1"></i> Securely powered by DriveSure
-			</div>
-		</div>
-	</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f0f4ff; min-height: 100vh; }
+        .auth-left {
+            background: linear-gradient(145deg, #0f766e 0%, #134e4a 60%, #0f172a 100%);
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 3rem 2.5rem; color: white;
+            position: relative; overflow: hidden;
+        }
+        .auth-left::before { content:''; position:absolute; top:-80px; right:-80px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,.05); }
+        .auth-right { min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:2.5rem; background:white; }
+        .form-control, .form-select { border:1.5px solid #e2e8f0; border-radius:10px; padding:.65rem 1rem; font-size:.925rem; transition:border-color .2s,box-shadow .2s; }
+        .form-control:focus, .form-select:focus { border-color:#0d9488; box-shadow:0 0 0 3px rgba(13,148,136,.1); }
+        .btn-register { background:linear-gradient(135deg,#0d9488,#0f766e); border:none; border-radius:10px; padding:.75rem; font-weight:600; transition:opacity .2s,transform .15s; }
+        .btn-register:hover { opacity:.92; transform:translateY(-1px); }
+        .input-icon { position:relative; }
+        .input-icon i.icon { position:absolute; left:.9rem; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:.85rem; }
+        .input-icon .form-control, .input-icon .form-select { padding-left:2.4rem; }
+        .role-card { border:1.5px solid #e2e8f0; border-radius:10px; padding:.75rem 1rem; cursor:pointer; transition:border-color .15s,background .15s; }
+        .role-card:has(input:checked) { border-color:#0d9488; background:#f0fdfa; }
+        .role-card input[type=radio] { display:none; }
+        .strength-bar { height:4px; border-radius:2px; background:#e2e8f0; overflow:hidden; }
+        .strength-fill { height:100%; border-radius:2px; transition:width .3s,background .3s; }
+        span.tag-badge { background:rgba(255,255,255,.1); border-radius:8px; padding:.3rem .7rem; font-size:.8rem; display:inline-block; margin:.2rem; }
+    </style>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <div class="row g-0">
+
+        <!-- Left -->
+        <div class="col-lg-5 auth-left d-none d-lg-flex">
+            <div style="position:relative;z-index:1">
+                <div class="d-flex align-items-center gap-2 mb-5">
+                    <div class="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center" style="width:44px;height:44px">
+                        <i class="fa-solid fa-shield-halved text-white"></i>
+                    </div>
+                    <span class="fw-bold fs-5">DriveSure Insurance</span>
+                </div>
+                <h2 class="fw-bold lh-sm mb-3" style="font-size:2rem">Join the DriveSure<br/>Platform</h2>
+                <p class="mb-5" style="color:rgba(255,255,255,.7);font-size:.95rem">
+                    Register as a Customer to file claims, or as an officer to manage them.
+                </p>
+                <div class="mb-4">
+                    <div class="tag-badge"><i class="fa-solid fa-user me-1"></i> Customer</div>
+                    <div class="tag-badge"><i class="fa-solid fa-briefcase me-1"></i> Claims Officer</div>
+                    <div class="tag-badge"><i class="fa-solid fa-magnifying-glass me-1"></i> Surveyor</div>
+                    <div class="tag-badge"><i class="fa-solid fa-clipboard-check me-1"></i> Compliance Officer</div>
+                </div>
+                <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:1.25rem">
+                    <i class="fa-solid fa-circle-info me-2" style="color:rgba(255,255,255,.6)"></i>
+                    <span style="font-size:.875rem;color:rgba(255,255,255,.75)">Passwords are encrypted using BCrypt before storage — never stored in plaintext.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right -->
+        <div class="col-lg-7 auth-right">
+            <div style="max-width:480px;width:100%;margin:0 auto">
+
+                <div class="d-flex align-items-center gap-2 mb-4 d-lg-none">
+                    <div class="rounded-circle bg-teal d-flex align-items-center justify-content-center" style="width:36px;height:36px;background:#0d9488">
+                        <i class="fa-solid fa-shield-halved text-white fa-sm"></i>
+                    </div>
+                    <span class="fw-bold">DriveSure</span>
+                </div>
+
+                <h4 class="fw-bold mb-1">Create your account</h4>
+                <p class="text-muted mb-4" style="font-size:.9rem">Fill in the details below to get started</p>
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger" style="border-radius:10px;font-size:.875rem;border:none">
+                        <i class="fa-solid fa-circle-exclamation me-2"></i>
+                        @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        { <div>@err.ErrorMessage</div> }
+                    </div>
+                }
+
+                <form asp-action="Register" method="post" id="regForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small">Full Name</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-user icon"></i>
+                                <input asp-for="FullName" class="form-control" placeholder="John Doe" required />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold small">Username</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-at icon"></i>
+                                <input asp-for="Username" class="form-control" placeholder="john_doe" required />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold small">Email</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-envelope icon"></i>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="john@example.com" required />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold small">Password</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-lock icon"></i>
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Min 6 chars" id="pwd" required oninput="checkStrength(this.value)" />
+                            </div>
+                            <div class="strength-bar mt-1"><div class="strength-fill" id="strengthFill" style="width:0%"></div></div>
+                            <div id="strengthText" class="text-muted" style="font-size:.75rem"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold small">Confirm Password</label>
+                            <div class="input-icon">
+                                <i class="fa-solid fa-lock icon"></i>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Repeat password" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold small d-block">Role</label>
+                        <div class="row g-2">
+                            @{
+                                var roles = new[] {
+                                    ("Customer",          "fa-user",            "File & track claims"),
+                                    ("ClaimsOfficer",     "fa-briefcase",       "Review & process claims"),
+                                    ("Surveyor",          "fa-magnifying-glass","Assess damage on-site"),
+                                    ("ComplianceOfficer", "fa-clipboard-check", "Run compliance checks"),
+                                };
+                            }
+                            @foreach (var (val, icon, desc) in roles)
+                            {
+                                <div class="col-6">
+                                    <label class="role-card d-flex align-items-center gap-2 w-100">
+                                        <input type="radio" name="Role" value="@val"
+                                               @(val == "Customer" ? "checked" : "") />
+                                        <i class="fa-solid @icon text-primary" style="width:18px"></i>
+                                        <div>
+                                            <div class="fw-semibold" style="font-size:.85rem">@val.Replace("Officer"," Officer")</div>
+                                            <div class="text-muted" style="font-size:.75rem">@desc</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-register w-100 text-white mb-3">
+                        <i class="fa-solid fa-user-plus me-2"></i>Create Account
+                    </button>
+
+                    <p class="text-center text-muted small">
+                        Already have an account?
+                        <a href="/Home/Login" class="fw-semibold text-decoration-none" style="color:#0d9488">Sign in</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function checkStrength(v) {
+        const fill = document.getElementById('strengthFill');
+        const text = document.getElementById('strengthText');
+        let score = 0;
+        if (v.length >= 6) score++;
+        if (v.length >= 10) score++;
+        if (/[A-Z]/.test(v)) score++;
+        if (/[0-9]/.test(v)) score++;
+        if (/[^A-Za-z0-9]/.test(v)) score++;
+        const map = [[0,'0%','#e2e8f0',''], [1,'20%','#ef4444','Weak'], [2,'40%','#f97316','Fair'], [3,'60%','#eab308','Good'], [4,'80%','#22c55e','Strong'], [5,'100%','#16a34a','Very strong']];
+        const [,w,c,l] = map[score] || map[0];
+        fill.style.width = w; fill.style.background = c; text.textContent = l; text.style.color = c;
+    }
+</script>
+</body>
+</html>

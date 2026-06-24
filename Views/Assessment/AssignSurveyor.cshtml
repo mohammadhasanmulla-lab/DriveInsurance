@@ -1,0 +1,67 @@
+@{
+    ViewBag.Title = "Assign Surveyor - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int claimId = ViewBag.ClaimId;
+    var surveyors = ViewBag.Surveyors as List<MyProject.Models.AppUser> ?? new();
+}
+
+<div class="container py-4" style="max-width:600px">
+    <div class="mb-4">
+        <a href="/Claim/GetClaimDetails/@claimId" class="text-decoration-none text-muted small"><i class="fa-solid fa-arrow-left me-1"></i>Back to Claim</a>
+        <h4 class="fw-bold mt-2"><i class="fa-solid fa-user-tie me-2 text-info"></i>Assign Surveyor</h4>
+        <p class="text-muted small">Claim #CLM-@claimId.ToString("D5")</p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    { <div class="alert alert-danger" style="border-radius:10px;border:none"><i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["Error"]</div> }
+
+    @if (!surveyors.Any())
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center py-5 text-muted">
+                <i class="fa-solid fa-user-slash fa-3x mb-3 d-block"></i>
+                No active surveyors registered in the system.
+                <a href="/Home/Register" class="d-block mt-2 btn btn-sm btn-outline-primary">Register a Surveyor</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <form asp-action="AssignSurveyor" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="claimId" value="@claimId" />
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold small">Select Surveyor <span class="text-danger">*</span></label>
+                        <div class="row g-2">
+                            @foreach (var s in surveyors)
+                            {
+                                <div class="col-12">
+                                    <label style="cursor:pointer;border:1.5px solid #e2e8f0;border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;width:100%;transition:border-color .15s">
+                                        <input type="radio" name="surveyorId" value="@s.Id" required style="display:none"
+                                               onclick="this.closest('label').style.borderColor='#0d9488';document.querySelectorAll('.surv-label').forEach(l=>l!=this.closest('label') ? l.style.borderColor='#e2e8f0' : null)" />
+                                        <div class="rounded-circle bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width:40px;height:40px">
+                                            @(s.FullName.Length > 0 ? s.FullName[0..1].ToUpper() : "?")
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold" style="font-size:.9rem">@s.FullName</div>
+                                            <div class="text-muted small">@s.Email &bull; @s.Department</div>
+                                        </div>
+                                        <span class="ms-auto badge bg-success">Active</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4"><i class="fa-solid fa-check me-1"></i>Assign Surveyor</button>
+                        <a href="/Claim/GetClaimDetails/@claimId" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,87 @@
+@model MyProject.Models.AssessmentEntity?
+@{
+    ViewBag.Title = "Assessment Details - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int claimId = ViewBag.ClaimId;
+    var role = Context.Session.GetString("UserRole") ?? "";
+    var surveyors = ViewBag.Surveyors as List<MyProject.Models.AppUser> ?? new();
+}
+
+<div class="container py-4" style="max-width:720px">
+    <div class="mb-4">
+        <a href="/Claim/GetClaimDetails/@claimId" class="text-decoration-none text-muted small"><i class="fa-solid fa-arrow-left me-1"></i>Back to Claim #CLM-@claimId.ToString("D5")</a>
+        <h4 class="fw-bold mt-2"><i class="fa-solid fa-magnifying-glass-chart me-2 text-info"></i>Assessment Details</h4>
+    </div>
+
+    @if (TempData["Success"] != null)
+    { <div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;border:none"><i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+    @if (TempData["Error"] != null)
+    { <div class="alert alert-danger alert-dismissible fade show" style="border-radius:10px;border:none"><i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+
+    @if (Model == null)
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center py-5 text-muted">
+                <i class="fa-solid fa-clipboard-list fa-3x mb-3 d-block"></i>
+                No surveyor has been assigned yet.
+                @if (role is "ClaimsOfficer" or "Admin")
+                {
+                    <div class="mt-3">
+                        <a href="/Assessment/AssignSurveyor/@claimId" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-user-plus me-1"></i>Assign Surveyor
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        var sv = surveyors.FirstOrDefault(s => s.Id == Model.SurveyorId);
+
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-header bg-white d-flex align-items-center justify-content-between py-3" style="border-radius:12px 12px 0 0">
+                <h6 class="mb-0 fw-bold">Assessment #@Model.AssessmentId</h6>
+                <span class="badge bg-@(Model.AssessmentStatus == "COMPLETED" ? "success" : "warning text-dark")">@Model.AssessmentStatus</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="text-muted small mb-1">Assigned Surveyor</div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-circle bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center fw-bold" style="width:36px;height:36px;font-size:.8rem">
+                                @(sv?.FullName?.Length > 0 ? sv.FullName[0..1].ToUpper() : "?")
+                            </div>
+                            <div>
+                                <div class="fw-semibold">@(sv?.FullName ?? $"Surveyor #{Model.SurveyorId}")</div>
+                                @if (sv != null) { <div class="text-muted small">@sv.Email</div> }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-muted small mb-1">Assessment Date</div>
+                        <div class="fw-semibold">@Model.AssessmentDate.ToString("MMMM dd, yyyy")</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-muted small mb-1">Assessed Amount</div>
+                        <div class="fw-bold text-success fs-4">
+                            @(Model.AssessedAmount > 0 ? Model.AssessedAmount.ToString("C") : "Not yet assessed")
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="text-muted small mb-1">Remarks</div>
+                        <div>@(string.IsNullOrWhiteSpace(Model.AssessmentRemarks) ? "—" : Model.AssessmentRemarks)</div>
+                    </div>
+                </div>
+            </div>
+            @if (Model.AssessmentStatus == "PENDING" && (role is "Surveyor" or "ClaimsOfficer" or "Admin"))
+            {
+                <div class="card-footer bg-white" style="border-radius:0 0 12px 12px">
+                    <a href="/Assessment/RecordAssessment/@claimId" class="btn btn-success btn-sm">
+                        <i class="fa-solid fa-pen me-1"></i>Record Assessment
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>

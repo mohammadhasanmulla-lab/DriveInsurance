@@ -1,99 +1,173 @@
+@model MyProject.Models.LoginModel
 @{
-	ViewBag.Title = "Login - DriveSure";
+    ViewBag.Title = "Sign In - DriveSure";
+    Layout = null;
 }
-<div class="d-flex align-items-center justify-content-center" style="min-height:calc(100vh - 80px); margin-top:80px;">
-	<div class="row w-100 justify-content-center px-3">
-		<div class="col-md-8 col-lg-6">
-			<!-- Error Alert -->
-			@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-			{
-				<div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-					<i class="fa-solid fa-circle-exclamation me-2"></i>
-					<strong>Login Failed</strong>
-					<br />
-					@ViewBag.ErrorMessage
-					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-				</div>
-			}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f0f4ff; min-height: 100vh; }
+        .auth-left {
+            background: linear-gradient(145deg, #1d4ed8 0%, #1e3a8a 60%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; padding: 3rem 2.5rem;
+            color: white; position: relative; overflow: hidden;
+        }
+        .auth-left::before {
+            content: ''; position: absolute; top: -80px; right: -80px;
+            width: 320px; height: 320px; border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+        }
+        .auth-left::after {
+            content: ''; position: absolute; bottom: -60px; left: -60px;
+            width: 240px; height: 240px; border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+        .auth-right {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 2.5rem;
+            background: white;
+        }
+        .form-control, .form-select {
+            border: 1.5px solid #e2e8f0; border-radius: 10px;
+            padding: .65rem 1rem; font-size: .925rem;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .form-control:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+        .btn-signin {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: none; border-radius: 10px; padding: .75rem;
+            font-weight: 600; letter-spacing: .02em;
+            transition: opacity .2s, transform .15s;
+        }
+        .btn-signin:hover { opacity: .92; transform: translateY(-1px); }
+        .input-icon { position: relative; }
+        .input-icon i { position: absolute; left: .9rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: .85rem; }
+        .input-icon .form-control { padding-left: 2.4rem; }
+        .alert-custom { border-radius: 10px; font-size: .875rem; border: none; }
+        .stat-badge { background: rgba(255,255,255,0.1); border-radius: 8px; padding: .4rem .75rem; font-size: .8rem; display: inline-block; margin: .2rem; }
+    </style>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <div class="row g-0">
 
-			<!-- Success Alert -->
-			@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
-			{
-				<div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-					<i class="fa-solid fa-circle-check me-2"></i>
-					@ViewBag.SuccessMessage
-					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-				</div>
-			}
+        <!-- Left panel -->
+        <div class="col-lg-5 auth-left d-none d-lg-flex">
+            <div style="position:relative;z-index:1">
+                <div class="d-flex align-items-center gap-2 mb-5">
+                    <div class="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center" style="width:44px;height:44px">
+                        <i class="fa-solid fa-shield-halved text-white"></i>
+                    </div>
+                    <span class="fw-bold fs-5">DriveSure Insurance</span>
+                </div>
 
-			<div class="card overflow-hidden shadow-lg">
-				<div class="row g-0">
-					<div class="col-md-5 d-none d-md-block" style="background: linear-gradient(180deg,#2563EB,#1E3A8A); color:white;">
-						<div class="p-4 text-center d-flex flex-column justify-content-center h-100">
-							<h3 class="fw-bold">Welcome Back</h3>
-							<p class="small">Secure access to claims & dashboards</p>
-							<i class="fa-solid fa-shield-halved fa-3x mt-3"></i>
-							<hr class="bg-white opacity-25 my-4" />
-							<div class="small">
-								<p class="mb-2"><strong>Demo Credentials:</strong></p>
-								<p class="mb-1">Admin: admin@company.com</p>
-								<p>Password: Admin@123</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-7">
-						<div class="card-body p-4">
-							<h5 class="card-title mb-4">Login to Your Account</h5>
-							<form method="post" action="/Home/Login">
-								<div class="mb-3">
-									<label class="form-label fw-semibold">Email Address</label>
-									<input type="email" class="form-control" name="email" placeholder="your@company.com" required />
-									<small class="text-muted">Enter your email address</small>
-								</div>
-								<div class="mb-3">
-									<label class="form-label fw-semibold">Password</label>
-									<input type="password" class="form-control" name="password" placeholder="Password" required />
-									<small class="text-muted">Enter your password</small>
-								</div>
-								<div class="d-flex justify-content-between align-items-center mb-4">
-									<div>
-										<input type="checkbox" id="remember" name="remember" /> 
-										<label for="remember" class="small">Remember me</label>
-									</div>
-									<a href="#" class="small text-primary">Forgot password?</a>
-								</div>
-								<div class="mt-4">
-									<button type="submit" class="btn btn-primary w-100 py-2">
-										<i class="fa-solid fa-sign-in-alt me-2"></i>Sign In
-									</button>
-								</div>
-								<div class="text-center mt-3 small text-muted">
-									New to DriveSure? <a href="/Home/Register" class="text-primary">Create account</a>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
+                <h2 class="fw-bold lh-sm mb-3" style="font-size:2rem">Claims Processing <br/>Made Simple</h2>
+                <p class="mb-4" style="color:rgba(255,255,255,.7);font-size:.95rem">
+                    Manage claims end-to-end — from registration through fraud detection to settlement payout.
+                </p>
 
-			<!-- Demo Credentials Info Card (Mobile) -->
-			@* <div class="card border-0 shadow-sm mt-3 d-md-none">
-				<div class="card-body p-3">
-					<h6 class="fw-bold mb-2">
-						<i class="fa-solid fa-circle-info text-info me-2"></i>Demo Credentials
-					</h6>
-					<small class="text-muted d-block mb-2">
-						<strong>Admin:</strong> admin@company.com / Admin@123
-					</small>
-					<small class="text-muted">
-						<strong>User:</strong> jane@company.com / Jane@123
-					</small>
-				</div>
-			</div> *@
+                <div class="mb-5">
+                    <div class="stat-badge"><i class="fa-solid fa-file-shield me-1"></i> Claim Tracking</div>
+                    <div class="stat-badge"><i class="fa-solid fa-shield-halved me-1"></i> Fraud Detection</div>
+                    <div class="stat-badge"><i class="fa-solid fa-hand-holding-dollar me-1"></i> Fast Settlement</div>
+                    <div class="stat-badge"><i class="fa-solid fa-lock me-1"></i> Secure & Encrypted</div>
+                </div>
 
-			<div class="text-center mt-3 text-muted small">
-				<i class="fa-solid fa-lock me-1"></i> Securely powered by DriveSure Insurance
-			</div>
-		</div>
-	</div>
+                <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:1.25rem">
+                    <div class="small mb-1" style="color:rgba(255,255,255,.55)">Default Admin Account</div>
+                    <div class="fw-semibold" style="font-size:.9rem">admin&#64;drivesure.com</div>
+                    <div class="small" style="color:rgba(255,255,255,.6)">Password: Admin&#64;123</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right panel -->
+        <div class="col-lg-7 auth-right">
+            <div style="max-width:420px; width:100%; margin:0 auto">
+
+                <!-- Mobile logo -->
+                <div class="d-flex align-items-center gap-2 mb-4 d-lg-none">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width:36px;height:36px">
+                        <i class="fa-solid fa-shield-halved text-white fa-sm"></i>
+                    </div>
+                    <span class="fw-bold">DriveSure</span>
+                </div>
+
+                <h4 class="fw-bold mb-1">Welcome back</h4>
+                <p class="text-muted mb-4" style="font-size:.9rem">Sign in to your account to continue</p>
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-custom alert-dismissible fade show mb-3">
+                        <i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
+                {
+                    <div class="alert alert-danger alert-custom alert-dismissible fade show mb-3">
+                        <i class="fa-solid fa-circle-exclamation me-2"></i>@ViewBag.ErrorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small">Email Address</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="you@example.com" required autocomplete="email" />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold small">Password</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock"></i>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" required autocomplete="current-password" id="pwdField" />
+                            <button type="button" onclick="togglePwd()" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;padding:0">
+                                <i class="fa-solid fa-eye fa-sm" id="pwdEye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-signin btn-primary w-100 text-white mb-3">
+                        <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In
+                    </button>
+
+                    <p class="text-center text-muted small">
+                        Don't have an account?
+                        <a href="/Home/Register" class="text-primary fw-semibold text-decoration-none">Create one</a>
+                    </p>
+                </form>
+
+                <div class="text-center mt-5 text-muted" style="font-size:.78rem">
+                    <i class="fa-solid fa-lock me-1"></i> Secured by DriveSure Insurance &copy; @DateTime.Now.Year
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function togglePwd() {
+        const f = document.getElementById('pwdField');
+        const e = document.getElementById('pwdEye');
+        if (f.type === 'password') { f.type = 'text'; e.className = 'fa-solid fa-eye-slash fa-sm'; }
+        else { f.type = 'password'; e.className = 'fa-solid fa-eye fa-sm'; }
+    }
+</script>
+</body>
+</html>

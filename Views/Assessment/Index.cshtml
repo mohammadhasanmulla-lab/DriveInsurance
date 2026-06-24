@@ -1,0 +1,67 @@
+@model List<MyProject.Models.AssessmentEntity>
+@{
+    ViewBag.Title = "Assessments - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("UserRole") ?? "";
+}
+
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <h4 class="fw-bold"><i class="fa-solid fa-magnifying-glass-chart me-2 text-info"></i>
+            @(role == "Surveyor" ? "My Assessments" : "All Assessments")
+        </h4>
+        <div class="text-muted small">Surveyor assignments and damage assessments</div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card shadow-sm"><div class="card-body text-center py-5 text-muted"><i class="fa-solid fa-clipboard-list fa-3x mb-3 d-block"></i>No assessments found.</div></div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Assessment #</th>
+                                <th>Claim</th>
+                                <th>Surveyor ID</th>
+                                <th>Assessed Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in Model)
+                            {
+                                var badge = a.AssessmentStatus == "COMPLETED" ? "success" : "warning text-dark";
+                                <tr>
+                                    <td class="fw-bold">#@a.AssessmentId</td>
+                                    <td><a href="/Claim/GetClaimDetails/@a.ClaimId">#CLM-@a.ClaimId.ToString("D5")</a></td>
+                                    <td>#@a.SurveyorId</td>
+                                    <td>@(a.AssessedAmount > 0 ? a.AssessedAmount.ToString("C") : "—")</td>
+                                    <td><span class="badge bg-@badge">@a.AssessmentStatus</span></td>
+                                    <td class="text-muted small">@a.AssessmentDate.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <a href="/Assessment/GetAssessmentDetails/@a.ClaimId" class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        @if (a.AssessmentStatus == "PENDING")
+                                        {
+                                            <a href="/Assessment/RecordAssessment/@a.ClaimId" class="btn btn-sm btn-outline-success">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

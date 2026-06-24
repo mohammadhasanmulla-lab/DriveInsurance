@@ -1,0 +1,229 @@
+@model MyProject.Models.ClaimEntity
+@{
+    ViewBag.Title = $"Claim #{Model.ClaimId} - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("UserRole") ?? "";
+
+    var statusBadge = Model.ClaimStatus switch {
+        "APPROVED"     => ("success",  "fa-circle-check"),
+        "REJECTED"     => ("danger",   "fa-circle-xmark"),
+        "UNDER_REVIEW" => ("warning",  "fa-magnifying-glass"),
+        _              => ("secondary","fa-clock")
+    };
+
+    // Progress step index (0–4)
+    int step = Model.ClaimStatus switch {
+        "REGISTERED"   => 0,
+        "UNDER_REVIEW" => 2,
+        "APPROVED"     => 4,
+        "REJECTED"     => 4,
+        _              => 0
+    };
+    if (Model.Documents.Any()) step = Math.Max(step, 1);
+    if (Model.Assessment   != null) step = Math.Max(step, 2);
+    if (Model.FraudCheck   != null) step = Math.Max(step, 3);
+    if (Model.Settlement   != null) step = Math.Max(step, 4);
+}
+
+<div class="container-fluid py-4">
+    <div class="mb-3">
+        <a href="/Claim/Index" class="text-decoration-none text-muted small"><i class="fa-solid fa-arrow-left me-1"></i>Back to Claims</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    { <div class="alert alert-success alert-dismissible fade show"><i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+    @if (TempData["Error"] != null)
+    { <div class="alert alert-danger alert-dismissible fade show"><i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+
+    <div class="row g-4">
+        <!-- ── Left: Claim Info ── -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between py-3">
+                    <div>
+                        <h5 class="mb-0 fw-bold">Claim #CLM-@Model.ClaimId.ToString("D5")</h5>
+                        <div class="text-muted small">Registered @Model.CreatedDate.ToString("MMMM dd, yyyy")</div>
+                    </div>
+                    <span class="badge bg-@statusBadge.Item1 fs-6 px-3">
+                        <i class="fa-solid @statusBadge.Item2 me-1"></i>@Model.ClaimStatus.Replace("_"," ")
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="text-muted small">Policy ID</div>
+                            <div class="fw-semibold">#@Model.PolicyId</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small">Customer ID</div>
+                            <div class="fw-semibold">#@Model.CustomerId</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small">Claim Type</div>
+                            <div class="fw-semibold">@Model.ClaimType</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small">Claim Amount</div>
+                            <div class="fw-semibold text-primary fs-5">@Model.ClaimAmount.ToString("C")</div>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(Model.Description))
+                        {
+                            <div class="col-12">
+                                <div class="text-muted small">Description</div>
+                                <div>@Model.Description</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h6 class="fw-semibold mb-3">Claim Progress</h6>
+                    <div class="d-flex justify-content-between text-center">
+                        @{ var steps = new[]{"Registered","Documents","Assessment","Fraud Check","Settlement"}; }
+                        @for (int i = 0; i < steps.Length; i++)
+                        {
+                            var active  = i <= step ? "text-primary fw-bold" : "text-muted";
+                            var dot     = i <= step ? "bg-primary" : "bg-secondary";
+                            <div class="flex-fill">
+                                <div class="mx-auto rounded-circle @dot text-white d-flex align-items-center justify-content-center" style="width:32px;height:32px;font-size:.8rem">@(i+1)</div>
+                                <div class="small mt-1 @active">@steps[i]</div>
+                            </div>
+                            @if (i < steps.Length - 1) { <div class="border-top align-self-start mt-4" style="flex:1;max-width:30px"></div> }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Officer / Admin actions -->
+            @if (role is "ClaimsOfficer" or "Admin")
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h6 class="fw-semibold mb-3">Officer Actions</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="/ClaimDocument/GetClaimDocuments/@Model.ClaimId" class="btn btn-outline-secondary btn-sm">
+                                <i class="fa-solid fa-paperclip me-1"></i> Documents (@Model.Documents.Count)
+                            </a>
+                            <a href="/Assessment/GetAssessmentDetails/@Model.ClaimId" class="btn btn-outline-info btn-sm">
+                                <i class="fa-solid fa-magnifying-glass-chart me-1"></i> Assessment
+                            </a>
+                            <a href="/Fraud/GetFraudScore/@Model.ClaimId" class="btn btn-outline-warning btn-sm">
+                                <i class="fa-solid fa-shield-halved me-1"></i> Fraud Check
+                            </a>
+                            <a href="/Settlement/Details/@Model.ClaimId" class="btn btn-outline-success btn-sm">
+                                <i class="fa-solid fa-hand-holding-dollar me-1"></i> Settlement
+                            </a>
+                        </div>
+
+                        <hr />
+                        <div class="d-flex gap-2 flex-wrap">
+                            <form asp-action="UpdateStatus" asp-controller="Claim" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="claimId" value="@Model.ClaimId" />
+                                <input type="hidden" name="status" value="UNDER_REVIEW" />
+                                <button type="submit" class="btn btn-warning btn-sm">Mark Under Review</button>
+                            </form>
+                            <form asp-action="UpdateStatus" asp-controller="Claim" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="claimId" value="@Model.ClaimId" />
+                                <input type="hidden" name="status" value="APPROVED" />
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                            <form asp-action="UpdateStatus" asp-controller="Claim" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="claimId" value="@Model.ClaimId" />
+                                <input type="hidden" name="status" value="REJECTED" />
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- ── Right: Summary panels ── -->
+        <div class="col-lg-4">
+            <!-- Documents -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white py-2 d-flex align-items-center justify-content-between">
+                    <span class="fw-semibold small"><i class="fa-solid fa-paperclip me-1 text-secondary"></i>Documents</span>
+                    <a href="/ClaimDocument/UploadClaimDocument/@Model.ClaimId" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:.75rem">+ Upload</a>
+                </div>
+                <div class="card-body py-2">
+                    @if (!Model.Documents.Any())
+                    { <div class="text-muted small text-center py-2">No documents uploaded yet.</div> }
+                    else
+                    {
+                        @foreach (var d in Model.Documents.Take(5))
+                        {
+                            var docBadge = d.VerificationStatus switch { "VERIFIED" => "success", "REJECTED" => "danger", _ => "warning text-dark" };
+                            <div class="d-flex align-items-center justify-content-between py-1 border-bottom">
+                                <div class="small text-truncate me-2" style="max-width:160px">
+                                    <i class="fa-solid fa-file me-1 text-muted"></i>@d.DocumentName
+                                </div>
+                                <span class="badge bg-@docBadge" style="font-size:.65rem">@d.VerificationStatus</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Assessment -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white py-2">
+                    <span class="fw-semibold small"><i class="fa-solid fa-magnifying-glass-chart me-1 text-info"></i>Assessment</span>
+                </div>
+                <div class="card-body py-2">
+                    @if (Model.Assessment == null)
+                    { <div class="text-muted small text-center py-2">Not yet assigned.</div> }
+                    else
+                    {
+                        <div class="small"><span class="text-muted">Surveyor ID: </span>@Model.Assessment.SurveyorId</div>
+                        <div class="small"><span class="text-muted">Amount: </span><strong>@Model.Assessment.AssessedAmount.ToString("C")</strong></div>
+                        <div class="small"><span class="text-muted">Status: </span>@Model.Assessment.AssessmentStatus</div>
+                    }
+                </div>
+            </div>
+
+            <!-- Fraud Check -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-white py-2">
+                    <span class="fw-semibold small"><i class="fa-solid fa-shield-halved me-1 text-warning"></i>Fraud Check</span>
+                </div>
+                <div class="card-body py-2">
+                    @if (Model.FraudCheck == null)
+                    { <div class="text-muted small text-center py-2">Not yet evaluated.</div> }
+                    else
+                    {
+                        var riskColor = Model.FraudCheck.RiskFlag switch { "HIGH" => "danger", "MEDIUM" => "warning text-dark", _ => "success" };
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-@riskColor fs-6">@Model.FraudCheck.RiskFlag</span>
+                            <span class="small text-muted">Score: @Model.FraudCheck.FraudScore / 100</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Settlement -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-2">
+                    <span class="fw-semibold small"><i class="fa-solid fa-hand-holding-dollar me-1 text-success"></i>Settlement</span>
+                </div>
+                <div class="card-body py-2">
+                    @if (Model.Settlement == null)
+                    { <div class="text-muted small text-center py-2">No settlement yet.</div> }
+                    else
+                    {
+                        <div class="small"><span class="text-muted">Amount: </span><strong>@Model.Settlement.SettlementAmount.ToString("C")</strong></div>
+                        <div class="small"><span class="text-muted">Status: </span>@Model.Settlement.SettlementStatus</div>
+                        @if (!string.IsNullOrWhiteSpace(Model.Settlement.PaymentReference))
+                        { <div class="small text-success"><i class="fa-solid fa-check me-1"></i>Ref: @Model.Settlement.PaymentReference</div> }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

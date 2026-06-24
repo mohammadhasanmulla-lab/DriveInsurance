@@ -1,33 +1,52 @@
+using Microsoft.EntityFrameworkCore;
+using MyProject.Data;
+using MyProject.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ── EF Core ───────────────────────────────────────────────────────────────────
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// ── MVC + Session ─────────────────────────────────────────────────────────────
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
+    options.IdleTimeout        = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly    = true;
     options.Cookie.IsEssential = true;
 });
 
+// ── Services ──────────────────────────────────────────────────────────────────
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ClaimService>();
+builder.Services.AddScoped<ClaimDocumentService>();
+builder.Services.AddScoped<AssessmentService>();
+builder.Services.AddScoped<FraudService>();
+builder.Services.AddScoped<SettlementService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ── Migrate + Seed ────────────────────────────────────────────────────────────
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+    await UserService.SeedAdminAsync(db);
+}
+
+// ── Pipeline ──────────────────────────────────────────────────────────────────
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-// Serve static files (wwwroot)
 app.UseStaticFiles();
 app.UseRouting();
-
 app.UseSession();
-
 app.UseAuthorization();
-
 app.MapStaticAssets();
 
 app.MapControllerRoute(

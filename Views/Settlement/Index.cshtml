@@ -1,0 +1,94 @@
+@model List<MyProject.Models.SettlementLogEntity>
+@{
+    ViewBag.Title = "Settlements - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <h4 class="fw-bold"><i class="fa-solid fa-hand-holding-dollar me-2 text-success"></i>Settlement Log</h4>
+        <div class="text-muted small">All claim settlement and payment records</div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card shadow-sm"><div class="card-body text-center py-5 text-muted"><i class="fa-solid fa-receipt fa-3x mb-3 d-block"></i>No settlements recorded yet.</div></div>
+    }
+    else
+    {
+        <!-- Summary -->
+        <div class="row g-3 mb-4">
+            @{
+                var pending  = Model.Count(s => s.SettlementStatus == "PENDING");
+                var approved = Model.Count(s => s.SettlementStatus == "APPROVED");
+                var paid     = Model.Count(s => s.SettlementStatus == "PAID");
+                var rejected = Model.Count(s => s.SettlementStatus == "REJECTED");
+                var totalPaid = Model.Where(s => s.SettlementStatus == "PAID").Sum(s => s.SettlementAmount);
+            }
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 bg-secondary bg-opacity-10">
+                    <div class="card-body text-center py-3"><div class="h4 fw-bold mb-0">@pending</div><div class="text-muted small">Pending</div></div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 bg-success bg-opacity-10">
+                    <div class="card-body text-center py-3"><div class="h4 fw-bold text-success mb-0">@approved</div><div class="text-muted small">Approved</div></div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 bg-primary bg-opacity-10">
+                    <div class="card-body text-center py-3"><div class="h4 fw-bold text-primary mb-0">@paid</div><div class="text-muted small">Paid</div></div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card shadow-sm border-0 bg-success bg-opacity-25">
+                    <div class="card-body text-center py-3"><div class="h4 fw-bold text-success mb-0">@totalPaid.ToString("C0")</div><div class="text-muted small">Total Paid Out</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Settlement #</th>
+                                <th>Claim</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Payment Ref</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in Model)
+                            {
+                                var badge = s.SettlementStatus switch {
+                                    "PAID"     => "primary",
+                                    "APPROVED" => "success",
+                                    "REJECTED" => "danger",
+                                    _          => "secondary"
+                                };
+                                <tr>
+                                    <td class="fw-bold">#@s.SettlementId</td>
+                                    <td><a href="/Claim/GetClaimDetails/@s.ClaimId">#CLM-@s.ClaimId.ToString("D5")</a></td>
+                                    <td class="fw-semibold">@s.SettlementAmount.ToString("C")</td>
+                                    <td><span class="badge bg-@badge">@s.SettlementStatus</span></td>
+                                    <td class="text-muted small">@(s.PaymentReference ?? "—")</td>
+                                    <td class="text-muted small">@s.SettlementDate.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <a href="/Settlement/Details/@s.ClaimId" class="btn btn-sm btn-outline-primary">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

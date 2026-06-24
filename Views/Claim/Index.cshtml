@@ -1,0 +1,97 @@
+@model List<MyProject.Models.ClaimEntity>
+@{
+    ViewBag.Title = "Claims - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("UserRole") ?? "";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="mb-0 fw-bold"><i class="fa-solid fa-file-shield me-2 text-primary"></i>Claims</h4>
+            <div class="text-muted small">Manage and track insurance claims</div>
+        </div>
+        @if (role == "Customer")
+        {
+            <a href="/Claim/RegisterClaim" class="btn btn-primary">
+                <i class="fa-solid fa-plus me-1"></i> Register New Claim
+            </a>
+        }
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"><i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"><i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="fa-solid fa-folder-open fa-3x mb-3 d-block"></i>
+                    No claims found.
+                    @if (role == "Customer") { <a href="/Claim/RegisterClaim" class="d-block mt-2">Register your first claim</a> }
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Claim #</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Documents</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model)
+                            {
+                                var badgeClass = c.ClaimStatus switch {
+                                    "APPROVED"    => "success",
+                                    "REJECTED"    => "danger",
+                                    "UNDER_REVIEW"=> "warning text-dark",
+                                    _             => "secondary"
+                                };
+                                <tr>
+                                    <td><span class="fw-bold text-primary">#CLM-@c.ClaimId.ToString("D5")</span></td>
+                                    <td>@c.ClaimType</td>
+                                    <td>@c.ClaimAmount.ToString("C")</td>
+                                    <td><span class="badge bg-@badgeClass">@c.ClaimStatus.Replace("_"," ")</span></td>
+                                    <td class="text-muted small">@c.CreatedDate.ToString("MMM dd, yyyy")</td>
+                                    <td><span class="badge bg-light text-dark border">@c.Documents.Count</span></td>
+                                    <td>
+                                        <a href="/Claim/GetClaimDetails/@c.ClaimId" class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        <a href="/ClaimDocument/GetClaimDocuments/@c.ClaimId" class="btn btn-sm btn-outline-secondary me-1" title="Documents">
+                                            <i class="fa-solid fa-paperclip"></i>
+                                        </a>
+                                        @if (role is "ClaimsOfficer" or "Admin")
+                                        {
+                                            <a href="/Assessment/GetAssessmentDetails/@c.ClaimId" class="btn btn-sm btn-outline-info me-1" title="Assessment">
+                                                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                            </a>
+                                            <a href="/Fraud/GetFraudScore/@c.ClaimId" class="btn btn-sm btn-outline-warning" title="Fraud Check">
+                                                <i class="fa-solid fa-shield-halved"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

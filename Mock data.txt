@@ -1,0 +1,6 @@
+Role	Full Name	Email	Password
+Admin	Admin User	admin@drivesure.com	Admin@123
+Claims Officer	Jane Smith	jane@drivesure.com	Claims@123
+Surveyor	Mike Wilson	mike@drivesure.com	Survey@123
+Compliance Officer	Sara Johnson	sara@drivesure.com	Comply@123
+Customer	John Doe	john@drivesure.com	Customer@123

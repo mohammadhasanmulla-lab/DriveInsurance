@@ -1,131 +1,158 @@
+@model List<MyProject.Models.ClaimEntity>
 @{
-	ViewBag.Title = "Customer Dashboard - DriveSure";
-	ViewBag.Active = "Dashboard";
-	ViewBag.UserName = "Jane Doe";
+    ViewBag.Title = "Customer Dashboard - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string userName   = ViewBag.UserName ?? "Customer";
+    int totalClaims   = ViewBag.TotalClaims ?? 0;
+    int pendingClaims = ViewBag.Pending ?? 0;
+    int approved      = ViewBag.Approved ?? 0;
+    int rejected      = ViewBag.Rejected ?? 0;
+    var recent        = Model?.Take(5).ToList() ?? new();
 }
-<div class="row g-3">
-	<div class="col-lg-3 d-none d-lg-block">
-		@await Html.PartialAsync("_Sidebar")
-	</div>
 
-	<div class="col-lg-9">
-		<div class="d-flex align-items-center justify-content-between mb-3">
-			<div>
-				<h4 class="mb-0">Welcome back, <span class="text-primary">Jane</span></h4>
-				<div class="text-muted small">Here's an overview of your account</div>
-			</div>
-			<div>
-				<button class="btn btn-outline-primary me-2"><i class="fa-solid fa-file-circle-plus me-1"></i> Submit Claim</button>
-				<button class="btn btn-primary"><i class="fa-solid fa-eye me-1"></i> Track Claim</button>
-			</div>
-		</div>
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="mb-0">Welcome back, <span class="text-primary">@userName.Split(' ')[0]</span></h4>
+            <div class="text-muted small">Here's an overview of your claims</div>
+        </div>
+        <a href="/Claim/RegisterClaim" class="btn btn-primary">
+            <i class="fa-solid fa-file-circle-plus me-1"></i> Register New Claim
+        </a>
+    </div>
 
-n        <div class="row g-3 mb-3">
-			<div class="col-md-4">
-				<div class="card shadow-sm rounded">
-					<div class="card-body">
-						<div class="d-flex align-items-center">
-							<div class="me-3 display-6 text-primary"><i class="fa-solid fa-id-card"></i></div>
-							<div>
-								<div class="small text-muted">Active Policies</div>
-								<div class="h5 fw-bold">3</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card shadow-sm rounded">
-					<div class="card-body">
-						<div class="d-flex align-items-center">
-							<div class="me-3 display-6 text-warning"><i class="fa-solid fa-clock"></i></div>
-							<div>
-								<div class="small text-muted">Pending Claims</div>
-								<div class="h5 fw-bold">1</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="card shadow-sm rounded">
-					<div class="card-body">
-						<div class="d-flex align-items-center">
-							<div class="me-3 display-6 text-success"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-							<div>
-								<div class="small text-muted">Approved Claims</div>
-								<div class="h5 fw-bold">5</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="fs-2 text-primary"><i class="fa-solid fa-folder"></i></div>
+                    <div><div class="text-muted small">Total Claims</div><div class="h4 fw-bold mb-0">@totalClaims</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="fs-2 text-warning"><i class="fa-solid fa-clock"></i></div>
+                    <div><div class="text-muted small">Pending</div><div class="h4 fw-bold mb-0">@pendingClaims</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="fs-2 text-success"><i class="fa-solid fa-circle-check"></i></div>
+                    <div><div class="text-muted small">Approved</div><div class="h4 fw-bold mb-0">@approved</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="fs-2 text-danger"><i class="fa-solid fa-circle-xmark"></i></div>
+                    <div><div class="text-muted small">Rejected</div><div class="h4 fw-bold mb-0">@rejected</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-n        <!-- Claim Progress -->
-		<div class="card shadow-sm mb-3">
-			<div class="card-body">
-				<div class="d-flex justify-content-between">
-					<div>
-						<h6 class="mb-1">Claim #CLM-10234</h6>
-						<div class="small text-muted">Submitted on 2026-06-01</div>
-					</div>
-					<div class="text-end">
-						<div class="small text-muted">Status: <span class="fw-semibold text-warning">Under Review</span></div>
-					</div>
-				</div>
-				<div class="progress progress-sm mt-3" style="height:12px;">
-					<div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">55%</div>
-				</div>
-				<div class="d-flex justify-content-between small text-muted mt-2">
-					<div>Submit</div><div>Review</div><div>Survey</div><div>Compliance</div><div>Approval</div>
-				</div>
-			</div>
-		</div>
+    <div class="row g-4">
+        <!-- Recent Claims -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between py-3">
+                    <span class="fw-semibold"><i class="fa-solid fa-list me-1 text-muted"></i>Recent Claims</span>
+                    <a href="/Claim/Index" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    @if (!recent.Any())
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-folder-open fa-2x mb-2 d-block"></i>
+                            You haven't filed any claims yet.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr><th>Claim #</th><th>Type</th><th>Amount</th><th>Status</th><th></th></tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var c in recent)
+                                    {
+                                        var badgeClass = c.ClaimStatus switch {
+                                            "APPROVED"     => "success",
+                                            "REJECTED"     => "danger",
+                                            "UNDER_REVIEW" => "warning text-dark",
+                                            _              => "secondary"
+                                        };
+                                        <tr>
+                                            <td class="fw-bold text-primary">#CLM-@c.ClaimId.ToString("D5")</td>
+                                            <td>@c.ClaimType</td>
+                                            <td>@c.ClaimAmount.ToString("C")</td>
+                                            <td><span class="badge bg-@badgeClass">@c.ClaimStatus.Replace("_"," ")</span></td>
+                                            <td><a href="/Claim/GetClaimDetails/@c.ClaimId" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-eye"></i></a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
 
-n        <!-- Recent activity / quick actions -->
-		<div class="row g-3">
-			<div class="col-md-6">
-				<div class="card shadow-sm">
-					<div class="card-body">
-						<h6>Recent Claims</h6>
-						<ul class="list-unstyled mb-0">
-							<li class="py-2 border-bottom d-flex justify-content-between">
-								<div>
-									<div class="fw-semibold">#CLM-10234</div>
-									<div class="small text-muted">Collision - Vehicle</div>
-								</div>
-								<div class="text-end">
-									<div class="small text-muted">Under Review</div>
-								</div>
-							</li>
-							<li class="py-2 border-bottom d-flex justify-content-between">
-								<div>
-									<div class="fw-semibold">#CLM-10120</div>
-									<div class="small text-muted">Glass - Windshield</div>
-								</div>
-								<div class="text-end">
-									<div class="small text-muted">Approved</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
+        <!-- Quick Actions -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <span class="fw-semibold"><i class="fa-solid fa-bolt me-1 text-warning"></i>Quick Actions</span>
+                </div>
+                <div class="card-body d-grid gap-2">
+                    <a href="/Claim/RegisterClaim" class="btn btn-primary">
+                        <i class="fa-solid fa-file-circle-plus me-1"></i>Register New Claim
+                    </a>
+                    <a href="/Claim/Index" class="btn btn-outline-secondary">
+                        <i class="fa-solid fa-list me-1"></i>View All My Claims
+                    </a>
+                    <a href="/Home/Logout" class="btn btn-outline-danger">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                    </a>
+                </div>
+            </div>
 
-n            <div class="col-md-6">
-				<div class="card shadow-sm">
-					<div class="card-body">
-						<h6>Quick Actions</h6>
-						<div class="d-grid gap-2">
-							<button class="btn btn-outline-primary">Start New Claim</button>
-							<button class="btn btn-outline-secondary">Download Policy</button>
-							<button class="btn btn-outline-success">Contact Support</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-n    </div>
+            @if (recent.Any())
+            {
+                var latest = recent.First();
+                var step = latest.ClaimStatus switch {
+                    "REGISTERED"   => 20,
+                    "UNDER_REVIEW" => 50,
+                    "APPROVED"     => 100,
+                    "REJECTED"     => 100,
+                    _              => 10
+                };
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header bg-white py-2">
+                        <span class="fw-semibold small"><i class="fa-solid fa-location-dot me-1 text-primary"></i>Latest Claim Status</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="fw-semibold">#CLM-@latest.ClaimId.ToString("D5")</span>
+                            <span>@latest.ClaimStatus.Replace("_"," ")</span>
+                        </div>
+                        <div class="progress" style="height:10px">
+                            <div class="progress-bar bg-primary" style="width:@step%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted mt-1">
+                            <span>Submit</span><span>Review</span><span>Done</span>
+                        </div>
+                        <a href="/Claim/GetClaimDetails/@latest.ClaimId" class="btn btn-sm btn-outline-primary mt-2 w-100">Track Claim</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>

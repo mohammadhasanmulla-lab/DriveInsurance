@@ -1,0 +1,119 @@
+@model MyProject.Models.ClaimEntity
+@{
+    ViewBag.Title = "Register Claim - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var policies = ViewBag.Policies as List<MyProject.Models.Policy> ?? new();
+}
+
+<div class="container py-4" style="max-width:720px">
+    <div class="mb-4">
+        <a href="/Claim/Index" class="text-decoration-none text-muted small"><i class="fa-solid fa-arrow-left me-1"></i>Back to Claims</a>
+        <h4 class="fw-bold mt-2"><i class="fa-solid fa-file-circle-plus me-2 text-primary"></i>Register New Claim</h4>
+        <p class="text-muted small">Fill in the details below. Your policy will be validated before submission.</p>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            { <div><i class="fa-solid fa-circle-xmark me-1"></i>@e.ErrorMessage</div> }
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="RegisterClaim" method="post" id="claimForm">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Policy <span class="text-danger">*</span></label>
+                    <select asp-for="PolicyId" class="form-select" id="policySelect" required>
+                        <option value="">— Select a Policy —</option>
+                        @foreach (var p in policies)
+                        {
+                            <option value="@p.Id" data-coverage="@p.CoverageAmount" data-type="@p.PolicyType">
+                                @p.PolicyName (@p.PolicyType) — Coverage: @p.CoverageAmount.ToString("C")
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div id="policyInfo" class="alert alert-info d-none mb-3">
+                    <i class="fa-solid fa-circle-info me-1"></i>
+                    <span id="policyInfoText"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Claim Type <span class="text-danger">*</span></label>
+                    <select asp-for="ClaimType" class="form-select" required>
+                        <option value="">— Select —</option>
+                        <option>Collision</option>
+                        <option>Fire</option>
+                        <option>Theft</option>
+                        <option>Natural Disaster</option>
+                        <option>Medical Emergency</option>
+                        <option>Property Damage</option>
+                        <option>Liability</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Claim Amount (USD) <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input asp-for="ClaimAmount" type="number" min="1" step="0.01" class="form-control" id="claimAmount" placeholder="0.00" required />
+                    </div>
+                    <div id="amountValidation" class="form-text"></div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Briefly describe the incident..."></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Submit Claim
+                    </button>
+                    <a href="/Claim/Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const policySelect  = document.getElementById('policySelect');
+    const claimAmountEl = document.getElementById('claimAmount');
+    const policyInfo    = document.getElementById('policyInfo');
+    const policyInfoTxt = document.getElementById('policyInfoText');
+    const amountVal     = document.getElementById('amountValidation');
+
+    function checkAmount() {
+        const opt      = policySelect.options[policySelect.selectedIndex];
+        const coverage = parseFloat(opt?.dataset?.coverage || 0);
+        const amount   = parseFloat(claimAmountEl.value || 0);
+        if (!coverage || !amount) { amountVal.textContent = ''; return; }
+        if (amount > coverage) {
+            amountVal.innerHTML = `<span class='text-danger'><i class='fa-solid fa-triangle-exclamation me-1'></i>Amount exceeds coverage limit of $${coverage.toLocaleString()}</span>`;
+        } else {
+            amountVal.innerHTML = `<span class='text-success'><i class='fa-solid fa-circle-check me-1'></i>Within coverage limit</span>`;
+        }
+    }
+
+    policySelect.addEventListener('change', function () {
+        const opt = this.options[this.selectedIndex];
+        if (opt.value) {
+            policyInfo.classList.remove('d-none');
+            policyInfoTxt.textContent = `${opt.dataset.type} policy selected. Coverage: $${parseFloat(opt.dataset.coverage).toLocaleString()}`;
+        } else {
+            policyInfo.classList.add('d-none');
+        }
+        checkAmount();
+    });
+
+    claimAmountEl.addEventListener('input', checkAmount);
+</script>
+}

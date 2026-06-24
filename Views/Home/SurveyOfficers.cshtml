@@ -1,99 +1,44 @@
-@model List<SurveyOfficer>
+@model List<MyProject.Models.AppUser>
 @{
-	ViewBag.Title = "Survey Officers - DriveSure Admin";
+    ViewBag.Title = "Survey Officers - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container-fluid py-4">
-	<div class="row mb-4">
-		<div class="col-12">
-			<div class="d-flex justify-content-between align-items-center">
-				<div>
-					<h2 class="fw-bold">Survey Officers</h2>
-					<p class="text-muted">Manage and view all survey officers</p>
-				</div>
-				<a href="/Home/AdminDashboard" class="btn btn-outline-primary">
-					<i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard
-				</a>
-			</div>
-		</div>
-	</div>
+    <div class="mb-4">
+        <a href="/Home/AdminDashboard" class="text-decoration-none text-muted small"><i class="fa-solid fa-arrow-left me-1"></i>Dashboard</a>
+        <h4 class="fw-bold mt-1"><i class="fa-solid fa-magnifying-glass me-2 text-warning"></i>Survey Officers</h4>
+    </div>
 
-	<div class="row">
-		<div class="col-12">
-			<div class="card shadow-sm border-0">
-				<div class="card-header bg-light border-0">
-					<h5 class="mb-0">Total Survey Officers: <span class="badge bg-primary">@Model.Count</span></h5>
-				</div>
-				<div class="card-body">
-					@if (Model.Count == 0)
-					{
-						<div class="alert alert-info">No survey officers found.</div>
-					}
-					else
-					{
-						<div class="table-responsive">
-							<table class="table table-hover">
-								<thead class="table-light">
-									<tr>
-										<th>ID</th>
-										<th>Name</th>
-										<th>Email</th>
-										<th>Specialization</th>
-										<th>Surveys Completed</th>
-										<th>Accuracy Rate</th>
-										<th>Joined Date</th>
-										<th>Status</th>
-										<th>Actions</th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach (var officer in Model)
-									{
-										<tr>
-											<td>@officer.Id</td>
-											<td>
-												<strong>@officer.Username</strong>
-											</td>
-											<td>@officer.Email</td>
-											<td>@officer.Specialization</td>
-											<td>
-												<span class="badge bg-light text-dark">@officer.SurveysCompleted</span>
-											</td>
-											<td>
-												<div class="d-flex align-items-center">
-													<div class="progress me-2" style="width: 60px; height: 20px;">
-														<div class="progress-bar bg-success" style="width: @officer.AccuracyRate%"></div>
-													</div>
-													<span>@officer.AccuracyRate%</span>
-												</div>
-											</td>
-											<td>@officer.CreatedDate.ToString("MMM dd, yyyy")</td>
-											<td>
-												@if (officer.IsActive)
-												{
-													<span class="badge bg-success">Active</span>
-												}
-												else
-												{
-													<span class="badge bg-secondary">Inactive</span>
-												}
-											</td>
-											<td>
-												<button class="btn btn-sm btn-outline-primary" title="View Details">
-													<i class="fa-solid fa-eye"></i>
-												</button>
-												<button class="btn btn-sm btn-outline-secondary" title="Edit">
-													<i class="fa-solid fa-pen"></i>
-												</button>
-											</td>
-										</tr>
-									}
-								</tbody>
-							</table>
-						</div>
-					}
-				</div>
-			</div>
-		</div>
-	</div>
+    @if (!Model.Any())
+    {
+        <div class="card shadow-sm border-0"><div class="card-body text-center py-5 text-muted"><i class="fa-solid fa-magnifying-glass fa-3x mb-3 d-block"></i>No surveyors registered yet.</div></div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var u in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="rounded-circle bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-content-center fw-bold" style="width:48px;height:48px;font-size:1.1rem">
+                                    @(u.FullName.Length > 0 ? u.FullName[0..1].ToUpper() : "?")
+                                </div>
+                                <div>
+                                    <div class="fw-semibold">@u.FullName</div>
+                                    <div class="text-muted small">@@@u.Username</div>
+                                </div>
+                                <span class="badge bg-@(u.Status=="Active"?"success":"secondary") ms-auto">@u.Status</span>
+                            </div>
+                            <div class="small text-muted"><i class="fa-solid fa-envelope me-1"></i>@u.Email</div>
+                            <div class="small text-muted mt-1"><i class="fa-solid fa-building me-1"></i>@u.Department</div>
+                            <div class="small text-muted mt-1"><i class="fa-solid fa-calendar me-1"></i>Joined @u.CreatedDate.ToString("MMM dd, yyyy")</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>

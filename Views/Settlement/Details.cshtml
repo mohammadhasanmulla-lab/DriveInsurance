@@ -1,0 +1,151 @@
+@model MyProject.Models.SettlementLogEntity?
+@{
+    ViewBag.Title = "Settlement Details - DriveSure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int claimId = ViewBag.ClaimId;
+    var role = Context.Session.GetString("UserRole") ?? "";
+}
+
+<div class="container py-4" style="max-width:680px">
+    <div class="mb-4">
+        <a href="/Claim/GetClaimDetails/@claimId" class="text-decoration-none text-muted small"><i class="fa-solid fa-arrow-left me-1"></i>Back to Claim #CLM-@claimId.ToString("D5")</a>
+        <h4 class="fw-bold mt-2"><i class="fa-solid fa-hand-holding-dollar me-2 text-success"></i>Settlement & Payment</h4>
+    </div>
+
+    @if (TempData["Success"] != null)
+    { <div class="alert alert-success alert-dismissible fade show"><i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+    @if (TempData["Error"] != null)
+    { <div class="alert alert-danger alert-dismissible fade show"><i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div> }
+
+    @if (Model == null)
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center py-5 text-muted">
+                <i class="fa-solid fa-receipt fa-3x mb-3 d-block"></i>
+                No settlement record yet.
+            </div>
+        </div>
+
+        @if (role is "ClaimsOfficer" or "Admin")
+        {
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 fw-bold">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="ApproveSettlement" asp-controller="Settlement" method="post" class="mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="claimId" value="@claimId" />
+                        <div class="mb-2">
+                            <label class="form-label small fw-semibold">Approval Remarks</label>
+                            <textarea name="remarks" class="form-control form-control-sm" rows="2" placeholder="Optional remarks..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="fa-solid fa-circle-check me-1"></i>Approve Settlement
+                        </button>
+                    </form>
+                    <hr />
+                    <form asp-action="RejectSettlement" asp-controller="Settlement" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="claimId" value="@claimId" />
+                        <div class="mb-2">
+                            <label class="form-label small fw-semibold">Rejection Reason <span class="text-danger">*</span></label>
+                            <textarea name="reason" class="form-control form-control-sm" rows="2" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fa-solid fa-circle-xmark me-1"></i>Reject Claim
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        var badge = Model.SettlementStatus switch {
+            "PAID"     => ("primary",  "fa-circle-check",      "Payment Complete"),
+            "APPROVED" => ("success",  "fa-thumbs-up",         "Approved — Ready for Payment"),
+            "REJECTED" => ("danger",   "fa-circle-xmark",      "Rejected"),
+            _          => ("secondary","fa-clock",              "Pending Review")
+        };
+
+        <div class="card shadow-sm mb-4 border-@badge.Item1 border-start border-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="rounded-circle bg-@badge.Item1 bg-opacity-10 text-@badge.Item1 d-flex align-items-center justify-content-center" style="width:56px;height:56px;font-size:1.4rem">
+                        <i class="fa-solid @badge.Item2"></i>
+                    </div>
+                    <div>
+                        <div class="h5 fw-bold mb-0">@badge.Item3</div>
+                        <div class="text-muted small">Settlement #@Model.SettlementId &bull; @Model.SettlementDate.ToString("MMMM dd, yyyy")</div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="text-muted small">Settlement Amount</div>
+                        <div class="h4 fw-bold text-@badge.Item1">@Model.SettlementAmount.ToString("C")</div>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.PaymentReference))
+                    {
+                        <div class="col-sm-6">
+                            <div class="text-muted small">Payment Reference</div>
+                            <div class="fw-semibold font-monospace">@Model.PaymentReference</div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Remarks))
+                    {
+                        <div class="col-12">
+                            <div class="text-muted small">Remarks</div>
+                            <div>@Model.Remarks</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (role is "ClaimsOfficer" or "Admin")
+        {
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-2">
+                    <span class="fw-semibold small">Actions</span>
+                </div>
+                <div class="card-body">
+                    @if (Model.SettlementStatus == "APPROVED")
+                    {
+                        <form asp-action="ProcessPayment" asp-controller="Settlement" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="claimId" value="@claimId" />
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-money-bill-transfer me-1"></i>Process Payment
+                            </button>
+                        </form>
+                    }
+                    else if (Model.SettlementStatus == "PENDING")
+                    {
+                        <form asp-action="ApproveSettlement" asp-controller="Settlement" method="post" class="mb-3">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="claimId" value="@claimId" />
+                            <textarea name="remarks" class="form-control form-control-sm mb-2" rows="2" placeholder="Approval remarks..."></textarea>
+                            <button type="submit" class="btn btn-success btn-sm me-2">
+                                <i class="fa-solid fa-circle-check me-1"></i>Approve
+                            </button>
+                        </form>
+                        <form asp-action="RejectSettlement" asp-controller="Settlement" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="claimId" value="@claimId" />
+                            <textarea name="reason" class="form-control form-control-sm mb-2" rows="2" placeholder="Rejection reason..." required></textarea>
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fa-solid fa-circle-xmark me-1"></i>Reject
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="text-muted small">No further actions available for status: @Model.SettlementStatus</div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
